@@ -16,9 +16,12 @@ app.get('/', function(req, res){
 	res.render("index")
 })
 
+var search = "";
+var where = "";
+
 function indeed(callback){
-	var search = req.body.search;
-	var where = req.body.city;
+	// var search = req.body.search;
+	// var where = req.body.city;
 	request("http://www.indeed.com/jobs?q=" + search + "&l=" + where + "/", function(error, response, data){
 		if(!error && response.statusCode == 200){
 			var $ = cheerio.load(data);
@@ -31,13 +34,14 @@ function indeed(callback){
 								description: $(this).find(".summary").html()
 							 }
 			}).get();
+			callback(null, links);
 		}
-	})
+	}, 2000)
 }
 
 function jobDotCom(callback){
-	var search = req.body.search;
-	var where = req.body.city;
+	// var search = req.body.search;
+	// var where = req.body.city;
 	request("http://www.job.com/job-search/results/?titleSearch=&titleWhere=&q=" + search + "&l=" + where, function(error, response, data){
 		// res.send(data);
 		console.log(data);
@@ -52,13 +56,14 @@ function jobDotCom(callback){
 								description: $(this).find(".description").text()
 				}
 			}).get();
+			callback(null, links);
 		}
-	})
+	}, 5000)
 }
 
-function simpleHired(callback){
-	var search = req.body.search;
-	var where = req.body.city;
+function simplyHired(callback){
+	// var search = req.body.search;
+	// var where = req.body.city;
 	request("http://www.simplyhired.com/search?q=" + search + "&l=" + where, function(error, response, data){
 		// res.send(data);
 		console.log(data);
@@ -73,17 +78,27 @@ function simpleHired(callback){
 					description: $(this).find(".serp-snippet").text()
 				}
 			}).get();
+			callback(null, links);
 		}
-		res.render('results', {links: links});
+		// res.render('results', {links: links});
 		// res.send(data);
 
-	})
+	}, 7000)
 }
 
 
 app.post('/results', function(req, res){
-	async.waterfall([])
-		})
+	console.log(req.body.search);
+	console.log(req.body.city);
+	search = req.body.search;
+	where = req.body.city;
+	async.parallel([indeed, jobDotCom, simplyHired], function(err, results){
+		console.log("done!");
+		var allLinks = [].concat.apply([], results);
+		// res.render('resultpage', {results: results});
+		res.send(allLinks);
+	})
+})
 
 
 
