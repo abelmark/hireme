@@ -15,6 +15,11 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(ejsLayouts);
 app.use(flash());
+app.use(session({
+	secret: 'heytherebabyboy',
+	resave: false,
+	saveUninitialized: true
+}))
 
 app.get('/', function(req, res){
 	res.render("index")
@@ -77,11 +82,33 @@ function simplyHired(callback){
 	}, 7000)
 }
 
+//login forms and pages
 app.get('/login', function(req, res){
 	res.render("login");
 })
 
-app.post('/login', function(req, res){
+app.post('/login', function(req, res) {
+  var email = req.body.email;
+	var	password = req.body.password;
+
+	db.user.authenticate(email,password, function(err, user){
+		if(err){
+			res.send(err);
+		}else if(user){
+			req.session.userId = user.id;
+			res.redirect('/');
+		}else{
+			res.send('Email and/or password invalid');
+		}
+	})
+});
+
+//signup forms and pages
+app.get('/signup', function(req, res){
+	res.render("signup");
+})
+
+app.post('/signup', function(req, res){
 	var userInfo = req.body;
 	if(userInfo.password === userInfo.password2){
 		db.user.findOrCreate({
@@ -91,10 +118,11 @@ app.post('/login', function(req, res){
 			password: userInfo.password
 		}
 		}).spread(function(newUser, isCreated){
-			res.redirect('login');
+			res.redirect('signup');
 		})
 	}else{
-		res.redirect('login');
+		req.flash('danger', 'Passwords did not match')
+		res.redirect('signup');
 	}
 
 })
