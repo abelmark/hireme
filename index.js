@@ -6,11 +6,15 @@ var ejsLayouts = require('express-ejs-layouts');
 var request = require('request');
 var cheerio = require('cheerio');
 var async = require('async');
+var db = require('./models')
+var flash = require('connect-flash');
+var session = require('express-session');
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(ejsLayouts);
+app.use(flash());
 
 app.get('/', function(req, res){
 	res.render("index")
@@ -20,8 +24,6 @@ var search = "";
 var where = "";
 
 function indeed(callback){
-	// var search = req.body.search;
-	// var where = req.body.city;
 	request("http://www.indeed.com/jobs?q=" + search + "&l=" + where + "/", function(error, response, data){
 		if(!error && response.statusCode == 200){
 			var $ = cheerio.load(data);
@@ -31,7 +33,7 @@ function indeed(callback){
 								title: $(this).children(".jobtitle").text(),
 							  url: ("http://www.indeed.com" + $(this).find(".turnstileLink").attr("href")),
 							  company: $(this).find(".company").text(),
-								description: $(this).find(".summary").html()
+								description: $(this).find(".summary").text()
 							 }
 			}).get();
 			callback(null, links);
@@ -40,11 +42,7 @@ function indeed(callback){
 }
 
 function jobDotCom(callback){
-	// var search = req.body.search;
-	// var where = req.body.city;
-	request("http://www.job.com/job-search/results/?titleSearch=&titleWhere=&q=" + search + "&l=" + where, function(error, response, data){
-		// res.send(data);
-		console.log(data);
+	request("http://www.job.com/job-search/results/?titleSearch=&titleWhere=&q="+  search + "&l=" + where + "&geonameid=#.VsvJJZMrLVo", function(error, response, data){
 		if(!error && response.statusCode == 200){
 			var $ = cheerio.load(data);
 			var links = $('.m-result').map(function(link){
@@ -62,44 +60,65 @@ function jobDotCom(callback){
 }
 
 function simplyHired(callback){
-	// var search = req.body.search;
-	// var where = req.body.city;
 	request("http://www.simplyhired.com/search?q=" + search + "&l=" + where, function(error, response, data){
-		// res.send(data);
-		console.log(data);
 		if(!error && response.statusCode == 200){
 			var $ = cheerio.load(data);
 			var links = $('.js-jobs .card').map(function(link){
 				return {
 					site: "Simply Hired",
 					title: $(this).find(".serp-title").text(),
-					url: $(this).find("js-job-link").attr("href"),
+					url: "http://www.simplyhired.com" + $(this).find(".js-job-link").attr("href"),
 					company: $(this).find(".serp-subtitle").text(),
 					description: $(this).find(".serp-snippet").text()
 				}
 			}).get();
 			callback(null, links);
 		}
-		// res.render('results', {links: links});
-		// res.send(data);
-
 	}, 7000)
 }
 
+app.get('/login', function(req, res){
+	res.render("login");
+})
+
+app.post('/login', function(req, res){
+	var userInfo = req.body;
+	if(userInfo.password === userInfo.password2){
+		db.user.findOrCreate({
+			where: {
+			email: userInfo.email,
+			name: userInfo.name,
+			password: userInfo.password
+		}
+		}).spread(function(newUser, isCreated){
+			res.redirect('login');
+		})
+	}else{
+		res.redirect('login');
+	}
+
+})
 
 app.post('/results', function(req, res){
-	console.log(req.body.search);
-	console.log(req.body.city);
 	search = req.body.search;
 	where = req.body.city;
 	async.parallel([indeed, jobDotCom, simplyHired], function(err, results){
-		console.log("done!");
 		var allLinks = [].concat.apply([], results);
-		// res.render('resultpage', {results: results});
-		res.send(allLinks);
+		shuffle(allLinks);
+		res.render('resultpage', {allLinks: allLinks});
 	})
 })
 
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length; i; i--) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+    }
+    return a;
+}
 
 
 

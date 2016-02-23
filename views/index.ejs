@@ -1,8 +1,12 @@
-<form action="/results" method="POST" role="form">
-	<div class="form-group">
-		<label for="">Search for Jobs</label>
-		<input type="text" class="form-control search-form" id="" placeholder="Enter job to search" name='search'>
-		<input type='text' class='form-control search-form' id="" placeholder="Where" name='city'>
+<div class='row search-top'>
+	<div class="form-group center">
+		<form action="/results" method="POST" role="form" id='search-form'>
+			<h1 id='title' class= 'title-group'>Hire.me</h1>
+			<h2 class='title-group'>Find jobs | Get hired</h2>
+			<input type="text" class="form-control search-form center bg-search" id="" placeholder="Enter job to search" name='search'>
+			<input type='text' class='form-control search-form center bg-search' id="" placeholder="Where" name='city'>
+			<button type="submit" class="btn btn-primary">Search</button>
+		</form>
 	</div>
-	<button type="submit" class="btn btn-primary">Search</button>
-</form>
+</div>
+

@@ -1,4 +1,111 @@
+@font-face {
+  font-family: 'Nexa';
+  src:  url('fonts/Nexa_Bold.otf') format('otf'),
+        url('fonts/Nexa_Light.otf') format('otf');
+}
+
+.btn{
+	background-color: black;
+	border: hidden;
+}
+
+.btn:hover{
+	background-color: rgba(40,40,40,.9)
+}
+
+#title{
+/*	font-family: Nexa;
+	font-weight: bold;*/
+	color: rgba(0, 0, 0, .6);
+	/*text-shadow: 2px 2px #000111;*/
+	font-size: 10rem;
+}
+
+.title-group{
+	margin: -5px 0 0px 0;
+}
+
+
+.search{
+	text-shadow: 2px 2px #000000;
+}
+
+.row-top{
+	margin: 70px 0 50px 0;
+}
+
+.search-top{
+	margin: 200px 0;	
+}
+
 .search-form{
 	width: 400px;
 	height: 40px;
+	font-size: 2em;
+	display: inline-block;
+	font-weight: normal;
+}
+
+ul li{
+	line-height: 50px;
+}
+
+body { 
+  background: url('../images/background.png') no-repeat center center fixed; 
+  -webkit-background-size: contain;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: white;
+}
+
+#white {
+	color: white;
+	font-style: Nexa;
+	font-weight: bold;
+}
+
+.navbar{
+	background-color: rgba(0, 0, 0, 1);
+	border: none;
+	border-radius: none;
+}
+
+.navbar li{
+	color: black;
+}
+
+#search-group{
+	margin-top: 100px;
+}
+
+.center{
+	margin: 0 auto;
+	text-align: center;
+}
+
+.transparent{
+	background-color: rgba(0, 0, 0, .8);
+}
+
+.search-div{
+	width: 500px;
+	border-radius: 20px;
+	margin: 10px auto;
+}
+
+.form-control{
+	border: hidden;
+	margin: 5px auto;
+}
+
+.bg-search{
+	background-color: rgba(0, 0, 0, .4);
+	color: white;
+	font-weight: bold;
+}
+
+.login-container{
+	width: 400px;
+	margin: 0 auto;
 }

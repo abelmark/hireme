@@ -1,8 +1,14 @@
-<div class='well'>
-<% results.forEach(function(job){ %>
+
+<div class='row row-top'>
+<h1 class='center search'>Search Results</h1>
+<% allLinks.forEach(function(job){ %>
   <% if(job.url != 'http://www.indeed.comundefined'){ %>
-    <a href='<%= job.url %>'> <h1> <%= job.title %> : </h1></a>
-    <p> <%= job.company %> </p>
+	<div class='well transparent search-div xs-col-12'>
+    <a href='<%= job.url %>'> <h3> <%= job.title %> : </h3></a>
+    <h4> <%= job.company %> </h4>
+    <h5> <%= job.site %> </h5>
+    <p> <%= job.description %> </p>
+   </div>
   <% } %>
 <% }) %>
 </div>
