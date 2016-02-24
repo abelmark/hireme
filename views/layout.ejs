@@ -39,7 +39,15 @@
 							<button type="submit" class="btn btn-primary">Submit</button>
 						</form>
 					</li>
+					<% if (currentUser.name){ %>
+					<li>
+						<div id='user'>
+							<a href="/favorites"><%= currentUser.name %></a><p><a href="/logout">(logout)</a></p>
+						</div>
+					</li>
+					<% }else { %>
 					<li><a href="/login">Login</a></li>
+					<% } %>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div>

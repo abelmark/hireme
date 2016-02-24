@@ -21,12 +21,29 @@ app.use(session({
 	saveUninitialized: true
 }))
 
+var search = "";
+var where = "";
+
+
+//Sets current user for display
+app.use(function(req, res, next){
+	if(req.session.userId){
+		db.user.findById(req.session.userId).then(function(user){
+			req.currentUser = user;
+			res.locals.currentUser = user;
+			next();
+		})
+	}else{
+		req.currentUser = false;
+		res.locals.currentUser = false;
+		next();
+	}
+});
+
+//displays main page
 app.get('/', function(req, res){
 	res.render("index")
 })
-
-var search = "";
-var where = "";
 
 function indeed(callback){
 	request("http://www.indeed.com/jobs?q=" + search + "&l=" + where + "/", function(error, response, data){
@@ -43,7 +60,7 @@ function indeed(callback){
 			}).get();
 			callback(null, links);
 		}
-	}, 2000)
+	}, 500)
 }
 
 function jobDotCom(callback){
@@ -61,7 +78,7 @@ function jobDotCom(callback){
 			}).get();
 			callback(null, links);
 		}
-	}, 5000)
+	}, 1000)
 }
 
 function simplyHired(callback){
@@ -79,7 +96,7 @@ function simplyHired(callback){
 			}).get();
 			callback(null, links);
 		}
-	}, 7000)
+	}, 1500)
 }
 
 //login forms and pages
@@ -96,6 +113,7 @@ app.post('/login', function(req, res) {
 			res.send(err);
 		}else if(user){
 			req.session.userId = user.id;
+			console.log("LOGGED IN AS: " + user.name)
 			res.redirect('/');
 		}else{
 			res.send('Email and/or password invalid');
@@ -105,9 +123,16 @@ app.post('/login', function(req, res) {
 
 //signup forms and pages
 app.get('/signup', function(req, res){
-	res.render("signup");
+
+	res.render("signup", {error: null});
 })
 
+app.get('/logout', function(req, res){
+	req.session.userId = null;
+	res.redirect('/login')
+})
+
+//signs new user up
 app.post('/signup', function(req, res){
 	var userInfo = req.body;
 	if(userInfo.password === userInfo.password2){
@@ -121,12 +146,12 @@ app.post('/signup', function(req, res){
 			res.redirect('signup');
 		})
 	}else{
-		req.flash('danger', 'Passwords did not match')
-		res.redirect('signup');
+		res.redirect('signup', {error: "PASSWORDS DID NOT MATCH"});
 	}
 
 })
 
+//shows results from search
 app.post('/results', function(req, res){
 	search = req.body.search;
 	where = req.body.city;
@@ -137,6 +162,44 @@ app.post('/results', function(req, res){
 	})
 })
 
+//Shows favorites
+app.get('/favorites', function(req, res){
+	if(req.currentUser){
+		res.render('favorites');
+	}else{
+		var error = 'You must be logged in to view';
+		res.render('error', {error: error});
+	}
+})
+
+app.post('/favorites', function(req, res){
+	var job = req.body;
+	console.log(job);
+	if(req.currentUser){
+		db.favorites.findOrCreate({
+		where:{
+			title: job.title.trim(),
+			company: job.company.trim(),
+			site: job.site.trim(),
+			description: job.description.trim(),
+			url: job.url
+			}
+		}).spread(function(newJob, isCreated){
+			res.redirect('favorites');
+		})	
+	}else{
+		var error = "You must be logged in to add favorites";
+		res.render('error', {error: error})
+	}
+})
+
+//error page
+app.get('/error', function(req, res){
+	res.render("error");
+})
+
+
+//shuffle function for displaying jobs
 function shuffle(a) {
     var j, x, i;
     for (i = a.length; i; i--) {

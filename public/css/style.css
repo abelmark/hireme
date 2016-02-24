@@ -4,6 +4,10 @@
         url('fonts/Nexa_Light.otf') format('otf');
 }
 
+ul li !important{
+	line-height: 18px;
+}
+
 .btn{
 	background-color: black;
 	border: hidden;
@@ -24,7 +28,6 @@
 .title-group{
 	margin: -5px 0 0px 0;
 }
-
 
 .search{
 	text-shadow: 2px 2px #000000;
@@ -47,7 +50,7 @@
 }
 
 ul li{
-	line-height: 50px;
+	line-height: 18px;
 }
 
 body { 
@@ -62,7 +65,6 @@ body {
 #white {
 	color: white;
 	font-style: Nexa;
-	font-weight: bold;
 }
 
 .navbar{
@@ -102,7 +104,6 @@ body {
 .bg-search{
 	background-color: rgba(0, 0, 0, .4);
 	color: white;
-	font-weight: bold;
 }
 
 .login-container{

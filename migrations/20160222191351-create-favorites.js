@@ -8,11 +8,20 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      job: {
+      title: {
         type: Sequelize.STRING
       },
-      link: {
+      company: {
         type: Sequelize.STRING
+      },
+      site: {
+        type: Sequelize.STRING
+      },
+      description: {
+        type: Sequelize.TEXT
+      },
+      url: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
