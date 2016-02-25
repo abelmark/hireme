@@ -7,7 +7,6 @@ var request = require('request');
 var cheerio = require('cheerio');
 var async = require('async');
 var db = require('./models')
-var flash = require('connect-flash');
 var session = require('express-session');
 var webscraper = require('./webscrapers.js')
 
@@ -15,7 +14,6 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(ejsLayouts);
-app.use(flash());
 app.use(session({
 	secret: 'heytherebabyboy',
 	resave: false,
