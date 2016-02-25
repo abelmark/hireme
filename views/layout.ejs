@@ -33,6 +33,7 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right list-inline">
 					<li>
+					<div id='nav-form'>
 						<form action="/results" method="POST" role="form" class='form-inline'>
 							<div class="form-group">
 								<input type="text" class="form-control" placeholder="Job title" name='search'>
@@ -40,6 +41,7 @@
 							</div>					
 							<button type="submit" id='submit' class="btn btn-primary">Submit</button>
 						</form>
+					</div>
 					</li>
 					<% if (currentUser.name){ %>
 					<li>

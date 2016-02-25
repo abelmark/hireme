@@ -85,6 +85,10 @@ body {
 	margin-bottom: -7px;
 }
 
+#btn.btn.btn-primary{
+	margin-bottom: 10px;
+}
+
 .navbar li{
 	color: black;
 }
@@ -136,4 +140,10 @@ body {
 .login-container{
 	width: 400px;
 	margin: 0 auto;
+}
+
+@media(max-width: 600px){
+	#nav-form{
+		display: none;
+	}
 }
