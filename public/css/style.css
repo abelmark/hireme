@@ -142,12 +142,17 @@ body {
 	margin: 0 auto;
 }
 
-@media(max-width: 600px){
+@media(max-width: 774px){
 	#nav-form{
 		display: none;
 	}
 
 	.main-search{
 		display: block;
+	}
+
+	#search-stuff{
+		margin: 0 auto;
+		width: 400px;
 	}
 }
