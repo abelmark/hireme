@@ -8,6 +8,14 @@ ul li !important{
 	line-height: 18px;
 }
 
+#user{
+	margin-top: 5px;
+}
+
+#button{
+	margin-bottom: 0px;
+}
+
 .btn{
 	background-color: black;
 	border: hidden;
