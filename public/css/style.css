@@ -146,4 +146,8 @@ body {
 	#nav-form{
 		display: none;
 	}
+
+	.main-search{
+		display: block;
+	}
 }
