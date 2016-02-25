@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href='css/style.css'>
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<script type="text/javascript" src='js/script.js'></script>
 </head>
 <body>
 <div class='nav'>
@@ -26,7 +27,7 @@
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="/">Home</a></li>
+					<li><a href="/">Home</a></li>
 					<li><a href="/favorites">Favorites</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right list-inline">
@@ -36,7 +37,7 @@
 								<input type="text" class="form-control" placeholder="Job title" name='search'>
 								<input type="text" class="form-control" placeholder="Where" name='city'>
 							</div>					
-							<button type="submit" class="btn btn-primary">Submit</button>
+							<button type="submit" id='submit' class="btn btn-primary">Submit</button>
 						</form>
 					</li>
 					<% if (currentUser.name){ %>

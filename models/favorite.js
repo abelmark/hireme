@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var favorites = sequelize.define('favorites', {
+  var favorite = sequelize.define('favorite', {
     title: DataTypes.STRING,
     company: DataTypes.STRING,
     site: DataTypes.STRING,
@@ -10,8 +10,9 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         // associations can be defined here
+        models.favorite.belongsToMany(models.user, {through: "userFavorites"});
       }
     }
   });
-  return favorites;
+  return favorite;
 };

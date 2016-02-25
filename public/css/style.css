@@ -73,12 +73,31 @@ body {
 	border-radius: none;
 }
 
+.btn{
+	margin-bottom: -7px;
+}
+
 .navbar li{
 	color: black;
 }
 
 #search-group{
 	margin-top: 100px;
+}
+
+.warning{
+	color: red;
+	font-weight: bold;
+}
+
+.warning-border{
+	border-style: 1px solid red;
+}
+
+#opaque{
+	opacity: .9;
+	color: black;
+	margin-bottom: 8px;
 }
 
 .center{

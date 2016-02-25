@@ -9,6 +9,7 @@ var async = require('async');
 var db = require('./models')
 var flash = require('connect-flash');
 var session = require('express-session');
+var webscraper = require('./webscrapers.js')
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/public"));
@@ -20,9 +21,6 @@ app.use(session({
 	resave: false,
 	saveUninitialized: true
 }))
-
-var search = "";
-var where = "";
 
 
 //Sets current user for display
@@ -42,70 +40,17 @@ app.use(function(req, res, next){
 
 //displays main page
 app.get('/', function(req, res){
-	res.render("index")
+	res.render("index", {title: "home"})
 })
-
-function indeed(callback){
-	request("http://www.indeed.com/jobs?q=" + search + "&l=" + where + "/", function(error, response, data){
-		if(!error && response.statusCode == 200){
-			var $ = cheerio.load(data);
-			var links = $('.result').map(function(link){
-				return {
-								site: "Indeed",
-								title: $(this).children(".jobtitle").text(),
-							  url: ("http://www.indeed.com" + $(this).find(".turnstileLink").attr("href")),
-							  company: $(this).find(".company").text(),
-								description: $(this).find(".summary").text()
-							 }
-			}).get();
-			callback(null, links);
-		}
-	}, 500)
-}
-
-function jobDotCom(callback){
-	request("http://www.job.com/job-search/results/?titleSearch=&titleWhere=&q="+  search + "&l=" + where + "&geonameid=#.VsvJJZMrLVo", function(error, response, data){
-		if(!error && response.statusCode == 200){
-			var $ = cheerio.load(data);
-			var links = $('.m-result').map(function(link){
-				return {
-								site: "Job.com",
-								title: $(this).find(".job-title").text(),
-								url: "http://www.job.com/" + $(this).find("a").text(),
-								company: $(this).find(".company").text(),
-								description: $(this).find(".description").text()
-				}
-			}).get();
-			callback(null, links);
-		}
-	}, 1000)
-}
-
-function simplyHired(callback){
-	request("http://www.simplyhired.com/search?q=" + search + "&l=" + where, function(error, response, data){
-		if(!error && response.statusCode == 200){
-			var $ = cheerio.load(data);
-			var links = $('.js-jobs .card').map(function(link){
-				return {
-					site: "Simply Hired",
-					title: $(this).find(".serp-title").text(),
-					url: "http://www.simplyhired.com" + $(this).find(".js-job-link").attr("href"),
-					company: $(this).find(".serp-subtitle").text(),
-					description: $(this).find(".serp-snippet").text()
-				}
-			}).get();
-			callback(null, links);
-		}
-	}, 1500)
-}
 
 //login forms and pages
 app.get('/login', function(req, res){
 	res.render("login");
 })
 
+//logs in user
 app.post('/login', function(req, res) {
-  var email = req.body.email;
+  var email = req.body.email.toLowerCase();
 	var	password = req.body.password;
 
 	db.user.authenticate(email,password, function(err, user){
@@ -116,14 +61,14 @@ app.post('/login', function(req, res) {
 			console.log("LOGGED IN AS: " + user.name)
 			res.redirect('/');
 		}else{
-			res.send('Email and/or password invalid');
+			var error = 'Username or password incorrect';
+			res.redirect('login');
 		}
 	})
 });
 
 //signup forms and pages
 app.get('/signup', function(req, res){
-
 	res.render("signup", {error: null});
 })
 
@@ -138,24 +83,26 @@ app.post('/signup', function(req, res){
 	if(userInfo.password === userInfo.password2){
 		db.user.findOrCreate({
 			where: {
-			email: userInfo.email,
+			email: userInfo.email.toLowerCase(),
 			name: userInfo.name,
 			password: userInfo.password
 		}
 		}).spread(function(newUser, isCreated){
-			res.redirect('signup');
+			res.redirect('login');
+		}).catch(function(err){
+			res.render('error', {error: err})
 		})
 	}else{
-		res.redirect('signup', {error: "PASSWORDS DID NOT MATCH"});
+		res.render('signup', {error: "PASSWORDS DID NOT MATCH"});
 	}
 
 })
 
 //shows results from search
 app.post('/results', function(req, res){
-	search = req.body.search;
-	where = req.body.city;
-	async.parallel([indeed, jobDotCom, simplyHired], function(err, results){
+	var search = req.body.search;
+	var where = req.body.city;
+	async.parallel([webscraper.job(search, where), webscraper.simply(search, where), webscraper.indeed(search, where)], function(err, results){
 		var allLinks = [].concat.apply([], results);
 		shuffle(allLinks);
 		res.render('resultpage', {allLinks: allLinks});
@@ -165,33 +112,59 @@ app.post('/results', function(req, res){
 //Shows favorites
 app.get('/favorites', function(req, res){
 	if(req.currentUser){
-		res.render('favorites');
+		db.user.findById(req.currentUser.id).then(function(user){
+			user.getFavorites().then(function(favorites){
+				res.render('favorites', {favorites: favorites});
+			})
+		})
 	}else{
 		var error = 'You must be logged in to view';
-		res.render('error', {error: error});
+		res.render('error', {error: error,
+												 title: "favorites"});
 	}
 })
 
+//Adds favorites
 app.post('/favorites', function(req, res){
 	var job = req.body;
-	console.log(job);
 	if(req.currentUser){
-		db.favorites.findOrCreate({
-		where:{
-			title: job.title.trim(),
-			company: job.company.trim(),
-			site: job.site.trim(),
-			description: job.description.trim(),
-			url: job.url
-			}
-		}).spread(function(newJob, isCreated){
-			res.redirect('favorites');
-		})	
-	}else{
-		var error = "You must be logged in to add favorites";
-		res.render('error', {error: error})
+		db.user.findById(req.currentUser.id)
+		.then(function(user){
+			db.favorite.findOrCreate({
+			where:{
+				title: job.title.trim(),
+				company: job.company.trim(),
+				site: job.site.trim(),
+				description: job.description.trim(),
+				url: job.url
+				}
+			}).spread(function(fave, created){
+				if (fave) {
+					user.addFavorite(fave).then(function() {
+						res.redirect('favorites');
+					})
+				} else {
+					var error = "You must be logged in to add favorites";
+					res.render('error', {error: error})
+				}
+			})
+		})
 	}
 })
+
+//delete favorite page
+app.delete('/:id', function(req, res) {
+	db.user.findById(req.session.userId).then(function(user){
+		db.favorite.findById(req.params.id).then(function(fav) {
+			user.removeFavorite(fav)
+			res.send({msg: 'success'});
+  	}).catch(function(err) {
+   	 res.send({msg: 'error'});
+ 	 	});
+	})
+  
+});
+
 
 //error page
 app.get('/error', function(req, res){
@@ -211,7 +184,10 @@ function shuffle(a) {
     return a;
 }
 
-
+app.get('/*', function(req, res){
+	var error = "404 NOT FOUND"
+	res.render('error', {error: error});
+})
 
 
 

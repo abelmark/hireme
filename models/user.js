@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         // associations can be defined here
-        models.user.belongsToMany(models.favorites, {through: "userFavorites"});
+        models.user.belongsToMany(models.favorite, {through: "userFavorites"});
       }, 
       authenticate: function(email, password, callback){
       	this.find({
