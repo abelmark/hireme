@@ -51,6 +51,7 @@ app.get('/error', function(req, res){
 	res.render("error");
 })
 
+//controllers
 var favoritesCtrl = require('./controllers/favorites');
 app.use('/favorites', favoritesCtrl);
 var loginCtrl = require('./controllers/login');
