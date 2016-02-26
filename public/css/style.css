@@ -37,8 +37,9 @@ ul li !important{
 	margin: -5px 0 0px 0;
 }
 
-.search{
+#search{
 	text-shadow: 2px 2px #000000;
+	font-size: 4rem;
 }
 
 .row-top{
@@ -79,10 +80,6 @@ body {
 	background-color: rgba(0, 0, 0, 1);
 	border: none;
 	border-radius: none;
-}
-
-.btn{
-	margin-bottom: -7px;
 }
 
 #btn.btn.btn-primary{

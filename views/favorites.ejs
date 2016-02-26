@@ -1,7 +1,8 @@
 <div class = 'row row-top'>
-	<h1 class='center search'>Favorites</h1>
+	<div class = 'col-xs-12 col-sm-6 col-sm-offset-3 center'>
+	<h1 id='search'>Favorites</h1>
 		<% favorites.forEach(function(favorite){ %>
-			<div class='well transparent search-div col-xs-12'>
+			<div class='well transparent col-xs-12'>
 		    <a href='<%= favorite.url %>'> <h3> <%= favorite.title %> : </h3></a>
 		    <h4> <%= favorite.company %> </h4>
 		    <h5> <%= favorite.site %> </h5>
