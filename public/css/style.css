@@ -119,12 +119,7 @@ body {
 
 .transparent{
 	background-color: rgba(0, 0, 0, .8);
-}
-
-.search-div{
-	width: 500px;
 	border-radius: 20px;
-	margin: 10px auto;
 }
 
 .form-control{

@@ -3,7 +3,7 @@
 <h1 class='center search'>Search Results</h1>
 <% allLinks.forEach(function(job){ %>
   <% if(job.url != 'http://www.indeed.comundefined'){ %>
-	<div class='well transparent search-div col-xs-12'>
+	<div class='well transparent col-xs-12 col-sm-6 col-sm-offset-3'>
     <a href='<%= job.url %>'> <h3> <%= job.title %> : </h3></a>
     <h4> <%= job.company %> </h4>
     <h5> <%= job.site %> </h5>
