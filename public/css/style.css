@@ -137,7 +137,7 @@ body {
 	margin: 0 auto;
 }
 
-@media(max-width: 774px){
+@media(max-width: 804px){
 	#nav-form{
 		display: none;
 	}
