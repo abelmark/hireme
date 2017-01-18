@@ -3,11 +3,11 @@
 	<h1 id='search'>Saved Jobs</h1>
 		<% favorites.forEach(function(favorite){ %>
 			<div class='well transparent col-xs-12'>
-		    <a href='<%= favorite.url %>' target="_blank"> <h3> <%= favorite.title %> : </h3></a>
-		    <h4> <%= favorite.company %> </h4>
-		    <h5> <%= favorite.site %> </h5>
-		    <p> <%= favorite.description %> </p>
-		    <a href='/favorites/<%= favorite.id %>' class='btn btn-primary delete-btn'>Remove</a>
-		  </div>
+				<a href='<%= favorite.url %>' target="_blank"> <h3> <%= favorite.title %> : </h3></a>
+				<h4> <%= favorite.company %> </h4>
+				<h5> <%= favorite.site %> </h5>
+				<p> <%= favorite.description %> </p>
+				<a href='/favorites/<%= favorite.id %>' class='btn btn-primary delete-btn'>Remove</a>
+			</div>
 		<% }) %>
 </div>

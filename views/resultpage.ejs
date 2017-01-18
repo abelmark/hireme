@@ -2,23 +2,23 @@
 <div class='row row-top'>
 <h1 class='center search'>Search Results</h1>
 <% allLinks.forEach(function(job){ %>
-  <% if(job.url != 'http://www.indeed.comundefined'){ %>
-	<div class='well transparent col-xs-12 col-sm-6 col-sm-offset-3'>
-    <a href='<%= job.url %>' target="_blank"> <h3> <%= job.title %> : </h3></a>
-    <h4> <%= job.company %> </h4>
-    <h5> <%= job.site %> </h5>
-    <p> <%= job.description %> </p>
-    <form action="/favorites" method="POST" role="form">    
-    	<div class="form-group">
-    		<input type="hidden" class="form-control" value="<%=job.title %>" name="title">
-    		<input type="hidden" class="form-control" value="<%=job.company %>" name="company">
-    		<input type="hidden" class="form-control" value="<%=job.site %>" name="site">
-    		<input type="hidden" class="form-control" value="<%=job.description %>" name="description">
-    		<input type="hidden" class="form-control" value="<%=job.url %>" name="url">
-    	</div>    
-    	<button type="submit" class="btn btn-primary">Save For Later</button>
-    </form>
-   </div>
-  <% } %>
+	<% if(job.url != 'http://www.indeed.comundefined'){ %>
+		<div class='well transparent col-xs-12 col-sm-6 col-sm-offset-3'>
+			<a href='<%= job.url %>' target="_blank"> <h3> <%= job.title %> : </h3></a>
+			<h4> <%= job.company %> </h4>
+			<h5> <%= job.site %> </h5>
+			<p> <%= job.description %> </p>
+			<form action="/favorites" method="POST" role="form">    
+				<div class="form-group">
+					<input type="hidden" class="form-control" value="<%=job.title %>" name="title">
+					<input type="hidden" class="form-control" value="<%=job.company %>" name="company">
+					<input type="hidden" class="form-control" value="<%=job.site %>" name="site">
+					<input type="hidden" class="form-control" value="<%=job.description %>" name="description">
+					<input type="hidden" class="form-control" value="<%=job.url %>" name="url">
+				</div>    
+				<button type="submit" class="btn btn-primary">Save For Later</button>
+			</form>
+		</div>
+	<% } %>
 <% }) %>
 </div>
