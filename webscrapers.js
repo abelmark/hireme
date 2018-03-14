@@ -10,13 +10,13 @@ module.exports = {
 					var $ = cheerio.load(data);
 					var links = $('.result').map(function(link){
 						return {
-										site: "Indeed",
-										title: $(this).children(".jobtitle").text(),
-									  url: ("http://www.indeed.com" + $(this).find(".turnstileLink").attr("href")),
-									  company: $(this).find(".company").text(),
-										description: $(this).find(".summary").text()
-									 }
-					}).get();
+              site: "Indeed",
+              title: $(this).children(".jobtitle").text(),
+              url: ("http://www.indeed.com" + $(this).find(".turnstileLink").attr("href")),
+              company: $(this).find(".company").text(),
+              description: $(this).find(".summary").text()
+            }
+          }).get();
 					callback(null, links);
 				}
 			}, 500)
@@ -30,13 +30,13 @@ module.exports = {
 					var $ = cheerio.load(data);
 					var links = $('.m-result').map(function(link){
 						return {
-										site: "Job.com",
-										title: $(this).find(".job-title").text(),
-										url: "http://www.job.com/" + $(this).find("a").text(),
-										company: $(this).find(".company").text(),
-										description: $(this).find(".description").text()
-						}
-					}).get();
+              site: "Job.com",
+              title: $(this).find(".job-title").text(),
+              url: "http://www.job.com/" + $(this).find("a").text(),
+              company: $(this).find(".company").text(),
+              description: $(this).find(".description").text()
+            }
+          }).get();
 					callback(null, links);
 				}
 			}, 1000)
